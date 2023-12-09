@@ -18,7 +18,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
  * 全量聚合： 通过窗口分配器分配好窗口后，窗口中收集的数据，先不进行任何的聚合处理，而是维护起来，
  * 等到窗口触发计算时，一次将所有的数据进行一次计算然后输出结果。
  * ReduceFunction:
- *   两两聚合: 窗口来的第一个数据不参与
+ *   两两聚合: 窗口中第一个数据不执行聚合
  *   输入类型和输出类型一致
  *   T reduce(T value1,T value2) throws Exception
  */
