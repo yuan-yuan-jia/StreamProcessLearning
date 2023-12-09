@@ -16,7 +16,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
  * 非按键分区：所有数据不会进行key的隔离，都往同一个窗口放
  * 按键分区： 数据会按照key进行隔离，会为每个key分配对应的窗口
  */
-public class Flink06_WindowAssiner {
+public class Flink06_WindowAssigner {
 
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
