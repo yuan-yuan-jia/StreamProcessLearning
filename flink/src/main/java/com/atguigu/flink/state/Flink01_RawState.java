@@ -15,7 +15,7 @@ import java.util.List;
  * 跟状态相关的所有操作都需要自己来完成，例如状态创建、管理、
  * 备份、恢复。
  */
-public class RawState {
+public class Flink01_RawState {
 
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
