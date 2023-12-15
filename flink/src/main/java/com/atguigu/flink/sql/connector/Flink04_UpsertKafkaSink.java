@@ -1,6 +1,10 @@
 package com.atguigu.flink.sql.connector;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.ResultKind;
+import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 /**
@@ -9,9 +13,8 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 public class Flink04_UpsertKafkaSink {
 
     public static void main(String[] args) throws Exception {
-        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(1);
-        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        TableEnvironment tableEnv = TableEnvironment.create(EnvironmentSettings.newInstance()
+                .build());
 
 
         String createTable =
@@ -36,7 +39,7 @@ public class Flink04_UpsertKafkaSink {
 
         tableEnv.executeSql(createTable);
 
-        tableEnv.sqlQuery("select * from t1").execute().print();
+       // tableEnv.sqlQuery("select * from t1").execute().print();
 
 
 
@@ -48,10 +51,10 @@ public class Flink04_UpsertKafkaSink {
                 "primary key(id) not enforced" +
                 ") WITH (" +
                 "'connector' = 'upsert-kafka'," +
-                "'properties.bootstrap.servers' = 'hadoop102:9092'," +
-                "'topic' = 'first'," +
-                "'value.format' = 'json'," +
-                "'key.format'='json'" +
+                "'properties.bootstrap.servers' = 'hadoop102:9092,hadoop103:9092'," +
+                "'topic' = 'topic_c'," +
+                "'value.format' = 'csv'," +
+                "'key.format'='csv'" +
                // "'sink.delivery-guarantee' = 'at-least-once'" +
                 //"'sink.transactional-id-prefix' = ''"
                 //"'properties.transaction.timeout.ms' = '3000'"
@@ -59,14 +62,13 @@ public class Flink04_UpsertKafkaSink {
 
         tableEnv.executeSql(sinkTable);
 
+        //tableEnv.sqlQuery("select id,sum(vc) from t1 group by id").execute().print();
 
-        tableEnv.executeSql("insert into t2 select id,sum(vc) sumvc from t1 group by id");
+        TableResult tableResult = tableEnv.executeSql("insert into t2 select id,sum(vc) from t1 group by id");
+        tableResult.print();
+        ResultKind resultKind = tableResult.getResultKind();
+        System.out.println(resultKind);
 
 
-
-
-
-
-        env.execute();
     }
 }
